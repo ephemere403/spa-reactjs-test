@@ -1,13 +1,13 @@
 import React from "react";
 import CurrencyDiagram from "../components/CurrencyDiagram";
 
-const NewRequestPage = () => {
+const GroupRequestPage = () => {
     return (
         <div>
-            <h1>Hetero</h1>
-            <CurrencyDiagram />
+            <h1>Gay</h1>
+            <CurrencyDiagram/>
         </div>
     )
 }
 
-export default NewRequestPage
+export default GroupRequestPage
