@@ -8,7 +8,10 @@ const Sidebar = () => {
         <Navbar>
             <ul>
                 <li><Link to="/"> Dashboard </Link></li>
-                <li><Link to="/new"> Новая заявка </Link></li>
+                <li><Link to="/requests/new"> Новая заявка </Link></li>
+                <li><Link to="/requests/my/all"> Мои заявки </Link></li>
+                <li><Link to="/requests/my/accepted"> Согласованные заявки </Link></li>
+                <li><Link to="/requests/my/rejected"> Отклоненные заявки </Link></li>
             </ul>
         </Navbar>
     )
