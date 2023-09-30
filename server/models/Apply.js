@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 let citiesArr = ['Алматы', 'Астана', 'Актау','Атырау', 'Актобе', 'Караганда', 'Кокшетау', 'Костанай', 'Караганда' ]
+let statusArr = ['Unseen', 'Rejected', 'Applied']
 
 let Apply
 
@@ -9,9 +10,6 @@ try {
 catch {
 const RequestSchema = new mongoose.Schema({
 
-    id:{
-        type: Number
-    },
 
     fullName:{
         type: String,
@@ -22,7 +20,7 @@ const RequestSchema = new mongoose.Schema({
     phone:{
         type: Number,
         required: true,
-        max: 13
+        maxLength: 13
     },
 
     typeRequest:{
@@ -53,6 +51,15 @@ const RequestSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+
+    status: {
+        type: String,
+        enum: {
+            values: statusArr,
+            message: `заявка с некорректным статусом {VALUE}`
+        },
+        default: "Unseen"
+    }
 
 })
 

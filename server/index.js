@@ -1,7 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
-import { CreateApply, GetAllApplies } from "./routes/RequestRoute.js"
+import { CreateApply, GetAllApplies, RemoveApply, UpdateApply } from "./routes/RequestRoute.js"
 import cors from "cors";
+import HandleValidationErrors from "./utils/HandleValidationErrors.js";
 
 
 const app = express();
@@ -28,7 +29,9 @@ app.get('/', (req,res) => {
 })
 
 app.get('/requests', GetAllApplies)
-app.post('/requests', CreateApply)
+app.post('/requests', HandleValidationErrors, CreateApply)
+app.patch('/requests', HandleValidationErrors, UpdateApply)
+app.delete('/requests', RemoveApply)
 
 
 app.listen(port, () => console.log(`server has been started on ${port}`))

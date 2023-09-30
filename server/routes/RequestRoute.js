@@ -1,38 +1,119 @@
 import Apply from '../models/Apply.js';
+import mongoose from 'mongoose';
 
 export const CreateApply = async(req,res) => {
+    
     try{
         const filledApply = new Apply({
-            fullname : req.body.fullname,
+            fullName : req.body.fullName,
             phone : req.body.phone,
             typeRequest : req.body.typeRequest,
             amountRequest : req.body.amountRequest,
             city : req.body.city,
             phoneCall : req.body.phoneCall,
-            date : req.body.date
+            date : req.body.date,
+            status: req.body.status
 
         })
 
-        await filledApply.save
+        await filledApply.save()
+        res.status(200).json({
+            message: 'Успешно создалась заявка'
+        })
+
 
     } catch(error){
-        res.status(402).json({
-            message: 'Ошибка на сервере'
+        res.status(406).json({
+            message: 'Не удалось создать заявку'
         })
         console.log(error)
     }
 }
 
-export const GetAllApplies = async(req,res) => {
-    try{
-        const Applies = await Apply.find()
+export const RemoveApply = async(req,res) => {
+    const ApplyId = req.query.id
 
-        res.json(Applies)
+    if (!mongoose.Types.ObjectId.isValid(ApplyId)) {
+        return res.status(400).send('Не существует такой заявки');
+    }
 
-    } catch(error) {
-        res.status(402).json({
-            message: 'Не удалось получить статьи'
+    try {
+
+       await Apply.findOneAndDelete(
+        {
+            _id : ApplyId
+        }
+        )
+
+        res.status(200).json({
+            message : 'Успешно удалена заявка'
         })
 
+    } catch(error){
+        res.status(500).json({
+            message: 'Не удалось удалить заявку'
+        })
+        console.log(error)
+    }
+}
+
+export const UpdateApply = async(req,res) => {
+    const ApplyId = req.query.id
+
+    if (!mongoose.Types.ObjectId.isValid(ApplyId)) {
+        return res.status(400).send('Не существует такой заявки');
+    }
+
+    try {
+
+       await Apply.findOneAndUpdate(
+        {
+            _id : ApplyId
+        },
+        {
+            fullName : req.body.fullName,
+            phone : req.body.phone,
+            typeRequest : req.body.typeRequest,
+            amountRequest : req.body.amountRequest,
+            city : req.body.city,
+            phoneCall : req.body.phoneCall,
+            date : req.body.date,
+            status: req.body.status
+
+        },
+        {
+            new: true
+        }
+        )
+
+        res.status(200).json({
+            message : 'Успешно обновлена заявка'
+        })
+
+    } catch(error){
+        res.status(500).json({
+            message: 'Не удалось обновить заявку'
+        })
+        console.log(error)
+    }
+}
+
+export const GetAllApplies = async (req, res) => {
+    try {
+        let query = {};
+        
+
+        if (['Applied', 'Unseen', 'Rejected'].includes(req.query.status)) {
+            query.status = req.query.status;
+        }
+
+        const Applies = await Apply.find(query);
+        res.json(Applies);
+        
+    } catch (error) {
+        res.status(500).json({
+            message: 'Не удалось получить статьи'
+        });
+        console.error(error);
     }
 }
