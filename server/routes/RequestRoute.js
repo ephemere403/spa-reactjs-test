@@ -100,15 +100,18 @@ export const UpdateApply = async(req,res) => {
 
 export const GetAllApplies = async (req, res) => {
     try {
-        let query = {};
-        
+        let { page, limit } = req.query
+        page = parseInt(page, 10) || 1
+        limit = parseInt(limit, 10) || 10 // default is 1o applies per page
+        const skip = (page - 1) * limit;
 
+        let query = {}
         if (['Applied', 'Unseen', 'Rejected'].includes(req.query.status)) {
-            query.status = req.query.status;
+            query.status = req.query.status
         }
-
-        const Applies = await Apply.find(query);
-        res.json(Applies);
+        
+        const Applies = await Apply.find(query).skip(skip).limit(limit)
+        res.json(Applies)
         
     } catch (error) {
         res.status(500).json({
