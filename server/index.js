@@ -1,8 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import { CreateApply, GetAllApplies, RemoveApply, UpdateApply } from "./routes/RequestRoute.js"
+import { FetchCurrency } from "./routes/ApiRoute.js";
 import cors from "cors";
 import HandleValidationErrors from "./utils/HandleValidationErrors.js";
+
 
 
 const app = express();
@@ -15,7 +17,7 @@ app.use(cors(CorsOptions))
 
 // .env config
 const port = process.env.PORT || 3000
-const MongoURI = process.env.MONGODB_URI || `mongodb://localhost/my-database`
+const MongoURI = process.env.MONGODB_URI || `mongodb://127.0.0.1/my-database`
 
 // mongo connection
 mongoose.connect(MongoURI, { useNewUrlParser: true })
@@ -32,6 +34,6 @@ app.get('/requests', GetAllApplies)
 app.post('/requests', HandleValidationErrors, CreateApply)
 app.patch('/requests', HandleValidationErrors, UpdateApply)
 app.delete('/requests', RemoveApply)
-
+app.get('/fetchCurrency/:date', FetchCurrency)
 
 app.listen(port, () => console.log(`server has been started on ${port}`))
