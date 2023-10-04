@@ -15,6 +15,7 @@ function App() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/requests">
+          <Route path="/requests/new" element={<NewRequestPage/>}/>
           <Route path="/requests/:id" element={<EditRequestPage/>}/>
           <Route path="/requests/" element={<GroupRequestPage />} />
         </Route>

@@ -30,7 +30,7 @@ const RequestSchema = new mongoose.Schema({
 
     amountRequest:{
         type: Number,
-        default: 1
+        default: 1000
     },
 
     city:{

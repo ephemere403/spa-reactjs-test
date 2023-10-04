@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import Col from 'react-bootstrap/esm/Col';
+import Row from 'react-bootstrap/esm/Row';
 
 
 const CurrencyDiagram = () => {
     const [data, setData] = useState([]);
-    const [daysScope, setDaysScope] = useState(3); // default to 3 days
+    const [daysScope, setDaysScope] = useState(7); // default to 3 days
     const API_Access_Key = '48fb275710cd425d0c78ed9c2f633172'
 
     useEffect(() => {
@@ -45,24 +47,27 @@ const CurrencyDiagram = () => {
     }, [daysScope]);
 
     return (
-        <div>
-            <input
-                type="range"
-                min="3"
-                max="30"
-                value={daysScope}
-                onChange={(e) => setDaysScope(Number(e.target.value))}
-            />
-            <span>{daysScope} days</span>
-            <LineChart width={600} height={300} data={data}>
+        <Row>
+            <Col sm-8>
+                <LineChart width={600} height={300} data={data}>
 
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Line type="monotone" dataKey="rate" stroke="#8884d8" />
-                <Tooltip />
-            </LineChart>
-        </div>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Line type="monotone" dataKey="rate" stroke="#8884d8" />
+                    <Tooltip />
+                </LineChart>
+                <input
+                    type="range"
+                    min="3"
+                    max="30"
+                    value={daysScope}
+                    onChange={(e) => setDaysScope(Number(e.target.value))}
+                />
+                <div>{daysScope} days</div>
+            </Col>
+        </Row>
+
     );
 };
 
