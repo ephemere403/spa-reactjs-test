@@ -9,13 +9,13 @@ import KpiDiagram from "../components/Dashboard/KpiDiagram";
 
 const DashboardPage = () => {
     return (
-        <Container>
-            <h2>Дашбоард: Анализ заявок компании</h2>
+        <Container fluid>
+            <h2 className="pb-5 pt-2">Дашбоард: Анализ заявок компании</h2>
 
-            <Row>
-                <Col> <CurrencyDiagram/> </Col>
+            <Row className="p-0 justify-content-start">
+                <Col className="col-md-12" > <CurrencyDiagram/> </Col>
             </Row>
-            <Row>
+            <Row className="p-0 justify-content-start">
                 <Col> <SalesDiagram/> </Col>
                 <Col> <RequestDiagram/> </Col>
                 <Col> <KpiDiagram/> </Col>

@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { CreateApply, GetAllApplies, RemoveApply, UpdateApply } from "./routes/RequestRoute.js"
 import { FetchCurrency } from "./routes/ApiRoute.js";
+import {FetchAppliesMonth, FetchAppliesCity} from "./routes/FetchRoute.js";
 import cors from "cors";
 import HandleValidationErrors from "./utils/HandleValidationErrors.js";
 
@@ -35,5 +36,7 @@ app.post('/requests', HandleValidationErrors, CreateApply)
 app.patch('/requests', HandleValidationErrors, UpdateApply)
 app.delete('/requests', RemoveApply)
 app.get('/fetchCurrency/:date', FetchCurrency)
+app.get('/fetchApplies/month', FetchAppliesMonth)
+app.get('/fetchApplies/city', FetchAppliesCity)
 
 app.listen(port, () => console.log(`server has been started on ${port}`))

@@ -1,23 +1,27 @@
-import React from "react"
+import {React, useState } from "react"
 import ApplyInput from "../components/Request/ApplyInput"
 import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/Col"
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import { useState } from "react"
+import {FormCheck, FormSelect, DropdownButton, Dropdown} from "react-bootstrap";
+import InputMask from 'react-input-mask'
+
 import axios from 'axios'
+import Col from "react-bootstrap/esm/Col";
+
 
 const NewRequestPage = () => {
     const [formData, setFormData] = useState({
         fullName : 'Иванов И.',
         phone: '',
+        amountClient: '',
         typeRequest: 'Классический',
         amountRequest: 1000,
         phoneCall: true,
         city: 'Алматы',
         date: new Date()
     })
-    const { fullName, phone, typeRequest, phoneCall, city, date } = formData;
+    const { fullName, phone,amountClient, typeRequest, amountRequest, phoneCall, city, date } = formData;
 
 
     const handleChange = (e) => {
@@ -50,13 +54,13 @@ const NewRequestPage = () => {
 
     return (
         <Container>
-            <h2>Новая Заявка</h2>
+            <h2 className="py-5">Новая Заявка</h2>
 
 
-            <Form onSubmit={handleSubmit}>
-                <Row>
+            <Form onSubmit={handleSubmit} >
+                <Row className="grid align-items-end row-gap-lg-4">
 
-                    <Form.Group className = "col-sm-6">
+                    <Form.Group className = "col-md-6">
                         <Form.Label> Название заявки* </Form.Label>
 
                         <ApplyInput>
@@ -64,7 +68,7 @@ const NewRequestPage = () => {
                         </ApplyInput>
                     </Form.Group>
 
-                    <Form.Group className="col-sm-3">
+                    <Form.Group className="col-md-3">
                         <Form.Label> Количество заявителей </Form.Label>
 
                         <ApplyInput type="numeric">
@@ -72,33 +76,91 @@ const NewRequestPage = () => {
                         </ApplyInput>
                     </Form.Group>
 
-                    <Form.Group className="col-sm-3">
+                    <Form.Group className="col-md-3">
                         <Form.Label> Номер телефона</Form.Label>
 
                         <ApplyInput type="numeric">
-                            <Form.Control name="phone" value={phone} placeholder="+7(___)___-__-__" onChange={handleChange} required />
+                            <Form.Control name="phone"  value={phone} placeholder="+7(___)___-____" onChange={handleChange} type="tel" pattern="[0-9]{4}-[0-9]{3}-[0-9]{4}"required />
                         </ApplyInput>
                     </Form.Group>
-                    </Row>
+
+                    <Form.Group className="col-md-3">
+                        <Form.Label>Сумма заявки</Form.Label>
+                        <Row>
+                            <Col>
+                                <ApplyInput type="numeric">
+                                    <InputMask mask="+7 (___)___-____" value={phone} onChange={handleChange}>
+                                        {(inputProps) => <Form.Control {...inputProps} type="tel" name="phone" required />}
+                                    </InputMask>
+
+                                </ApplyInput>
+                            </Col>
+                            <Col className="d-sm-inline-flex"> T </Col>
+
+                        </Row>
 
 
-                    <ApplyInput>
-                        <label>Тип заявки</label>
-                        <select value={typeRequest} onChange={handleChange}  required>
-                            <option value="Классический">Классический</option>
-                            <option value="Срочный">Срочный</option>
-                            <option value="Эпический">Эпический</option>
-                        </select>
-                    </ApplyInput>
+
+                    </Form.Group>
+
+                    <Form.Group className="col-md-3">
+                        <Form.Label> Тип заявки* </Form.Label>
+
+                        <ApplyInput>
+                            <FormSelect value={typeRequest} name="typeRequest" onChange={handleChange}  required>
+                                <option value="Классический">Классический</option>
+                                <option value="Срочный">Срочный</option>
+                                <option value="Эпический">Эпический</option>
+                            </FormSelect>
+                        </ApplyInput>
+                    </Form.Group>
+
+                    <Form.Group className="col-md-6">
+                        <Form.Label> Позвонить для подтверждения </Form.Label>
+                        <Row>
+                            <FormCheck className="col " type="radio" name="phoneCall" value={true} checked={phoneCall}
+                                       onChange={handleChange}/> Да
+                            <FormCheck className="col" type="radio" name="phoneCall" value={false} checked={!phoneCall}
+                                       onChange={handleChange}/> Нет
+                        </Row>
+                    </Form.Group>
+
+                    <Form.Group className="col-md-6">
+                        <Form.Label> Город </Form.Label>
+                        <ApplyInput>
+                            <DropdownButton id="dropdown-cities" title="Выберите город" expand="lg">
+                            {['Алматы', 'Астана', 'Актау','Атырау', 'Актобе', 'Караганда', 'Кокшетау', 'Костанай', 'Караганда' ].map((city) => (
+                                <Dropdown.Item key={city} onChange={handleChange}>{city}</Dropdown.Item>
+                            ))}
+                            </DropdownButton>
+                        </ApplyInput>
+                    </Form.Group>
+
+                    <Form.Group className="col-md-6">
+                        <Form.Label> Выберите дату </Form.Label>
+                        <Form.Control type="date" name="selectedDate" value={date} onChange={handleChange} />
+                    </Form.Group>
 
 
-                    <ApplyInput>
-                        <label>Phone Call:</label>
-                        <input type="radio" name="phoneCall" value="yes" checked={phoneCall} onChange={() => setPhoneCall(true)} /> Yes
-                        <input type="radio" name="phoneCall" value="no" checked={!phoneCall} onChange={() => setPhoneCall(false)} /> No
-                    </ApplyInput>
+                    <Form.Group className="col-md-6">
+                        <h6>Получать дополнительную информацию</h6>
+
+                        <input type="checkbox" id="EmailMe" className="btn btn-secondary m-1"/>
+                        <label for="EmailMe"> Письма на почту </label>
+                        <input type="checkbox" id="MsgMe" className="btn btn-secondary m-1"/>
+                        <label htmlFor="MsgMe"> СМС на телефон </label>
+                    </Form.Group>
 
 
+                    <div className="col-md-12 text-right">
+                        <h6><em>* is a required field</em></h6>
+                    </div>
+
+                    <Form.Group className="col-md-12 text-center">
+                        <button type="submit" className="btn btn-primary">Submit</button>
+                    </Form.Group>
+
+                </Row>
             </Form>
 
             
