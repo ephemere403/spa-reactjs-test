@@ -1,14 +1,14 @@
 import {React, useState} from "react"
+import DatePicker from "react-datepicker"
 import ApplyInput from "../components/Request/ApplyInput"
-import DateInput from "../components/Request/DateInput";
 import Row from "react-bootstrap/Row"
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import {FormCheck, FormSelect, DropdownToggle, Dropdown, Alert, DropdownMenu} from "react-bootstrap";
+import {FormCheck, FormSelect, Alert, InputGroup} from "react-bootstrap";
 import axios from 'axios'
-import Col from "react-bootstrap/esm/Col";
+import Col from "react-bootstrap/Col";
 import {isValidEmail, isValidPhone} from "../utilities/ValidateScript";
-
+import CityInput from "../components/Request/CityInput";
 
 const NewRequestPage = () => {
     const [formData, setFormData] = useState({
@@ -55,6 +55,13 @@ const NewRequestPage = () => {
             }))
         }
     }
+
+    const handleDateChange = (selectedDate) => {
+        setFormData(prevState => ({
+            ...prevState,
+            date: selectedDate
+        }));
+    };
 
 
     const handleSubmit = async (e) => {
@@ -136,21 +143,21 @@ const NewRequestPage = () => {
                         <Form.Group className="col-md-3">
                             <Form.Label> Город </Form.Label>
                             <ApplyInput>
-                                <DropdownToggle id="dropdown-cities" title="Выберите город" expand="lg"> Выберите ваш
-                                    город </DropdownToggle>
-
-                                <DropdownMenu>
-                                    {['Алматы', 'Астана', 'Актау', 'Атырау', 'Актобе', 'Караганда', 'Кокшетау', 'Костанай', 'Караганда'].map((city) => (
-                                        <Dropdown.Item key={city} onChange={handleChange}>{city}</Dropdown.Item>))}
-                                </DropdownMenu>
-
+                                <CityInput selectedCity={city} onChange={handleChange}/>
                             </ApplyInput>
                         </Form.Group>
 
 
                         <Form.Group className="col-md-3">
                             <Form.Label> Выберите дату </Form.Label>
-                            <Form.Control type="date" name="selectedDate" value={date} onChange={handleChange}/>
+
+                            <Col>
+                                <DatePicker
+                                    selected={date}
+                                    onChange={handleDateChange}
+                                />
+                            </Col>
+
                         </Form.Group>
 
                         <Form.Group className="col-12">
