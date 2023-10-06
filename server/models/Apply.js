@@ -23,6 +23,12 @@ const RequestSchema = new mongoose.Schema({
         maxLength: 13
     },
 
+    amountClient:{
+      type : Number,
+      default: 1,
+
+    },
+
     typeRequest:{
         type: String,
         required: true
