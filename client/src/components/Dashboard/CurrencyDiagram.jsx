@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import {LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer} from 'recharts'
 import CustomSkeleton from "../Skeleton";
+import Row from "react-bootstrap/Row";
 
 const CurrencyDiagram = () => {
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState([])
     const [daysScope, setDaysScope] = useState(7) // default to 7 days
     const API_Access_Key = '48fb275710cd425d0c78ed9c2f633172'
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         setLoading(true)
@@ -22,11 +24,10 @@ const CurrencyDiagram = () => {
                     dateArray.push(new Date(d))
                 }
                 const dataPromises = dateArray.map(async date => {
-                    const dateString = date.toISOString().split('T')[0]; // format as YYYY-MM-DD
+                    const dateString = date.toISOString().split('T')[0] // format as YYYY-MM-DD
                     const response = await axios.get(`http://localhost:3000/fetchCurrency/${dateString}`, {
                         params: {
                             symbols: 'KZT',
-                            // Add your API key here
                             access_key: API_Access_Key,
                         }
                     })
@@ -42,19 +43,19 @@ const CurrencyDiagram = () => {
                 setLoading(false)
             } catch (error) {
                 console.error("Error fetching data: ", error);
-                // Handle error accordingly
+                setError(error.response.data.message)
             }
         }
         fetchData()
     }, [daysScope])
 
     return (
-            <>
+            <Row>
                 {loading ? (
-                    <CustomSkeleton/>
+                    <CustomSkeleton errorMessage={error}/>
                     ) : (
-                        <ResponsiveContainer>
-                            <LineChart data={data}  width="100%" height={300} margin={{
+                        <ResponsiveContainer >
+                            <LineChart data={data}  width="100%" height={400} margin={{
                                 top: 10,
                                 right: 30,
                                 left: 0,
@@ -78,7 +79,7 @@ const CurrencyDiagram = () => {
                         </ResponsiveContainer>
 
             )}
-            </>
+            </Row>
 
     )
 }

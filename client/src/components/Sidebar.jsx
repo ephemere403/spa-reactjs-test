@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from 'react-bootstrap/Navbar';
 
 import { Link } from "react-router-dom";
-import {Nav, NavbarCollapse, NavbarToggle, NavDropdown, NavLink} from "react-bootstrap";
+import {Nav, NavbarCollapse, NavbarToggle, NavLink} from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 
 const Sidebar = () => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import {FormSelect} from "react-bootstrap";
 
-const cities = ['Алматы', 'Астана', 'Актау','Атырау', 'Актобе', 'Караганда', 'Кокшетау', 'Костанай', 'Караганда']
+const cities = ['','Алматы', 'Астана', 'Актау','Атырау', 'Актобе', 'Караганда', 'Кокшетау', 'Костанай', 'Караганда']
 
 const CityInput = ({ selectedCity, onChange }) => (
     <FormSelect name="city" onChange={onChange} value={selectedCity}>

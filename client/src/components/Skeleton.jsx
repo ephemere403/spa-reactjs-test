@@ -1,11 +1,12 @@
 import React from "react"
-import Row from "react-bootstrap/Row"
+import Skeleton from "react-loading-skeleton";
 
-const CustomSkeleton = () => {
+const CustomSkeleton = ({ errorMessage }) => {
     return (
-        <>
-            Loading:
-        </>
+        <div id="Skeleton" className="col p-2">
+            {errorMessage ? `Error: ${errorMessage}` : 'Loading:'} <Skeleton count={5}/>
+            {!errorMessage && <Skeleton count={5} />}
+        </div>
     )
 }
 

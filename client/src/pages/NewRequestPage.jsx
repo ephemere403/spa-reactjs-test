@@ -1,26 +1,59 @@
-import {React, useState} from "react"
+import {React, useEffect, useState} from "react"
 import DatePicker from "react-datepicker"
 import ApplyInput from "../components/Request/ApplyInput"
 import Row from "react-bootstrap/Row"
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import {FormCheck, FormSelect, Alert, InputGroup} from "react-bootstrap";
+import {FormCheck, FormSelect, Alert} from "react-bootstrap";
 import axios from 'axios'
 import Col from "react-bootstrap/Col";
 import {isValidEmail, isValidPhone} from "../utilities/ValidateScript";
 import CityInput from "../components/Request/CityInput";
 
 const NewRequestPage = () => {
-    const [formData, setFormData] = useState({
+    const storedFormData = sessionStorage.getItem('formData')
+    const defaultData = {
         fullName: '',
         phone: '',
         amountClient: 1,
         typeRequest: 'Классический',
         amountRequest: null,
         phoneCall: true,
-        city: 'Алматы',
-        date: new Date()
-    })
+        city: '',
+        date: ''
+    }
+    const [formData, setFormData] = useState(storedFormData ? JSON.parse(storedFormData) : defaultData)
+
+    useEffect(() => {
+        sessionStorage.setItem('formData', JSON.stringify(formData))
+    }, [formData]);
+
+    const isFormEmpty = () => {
+        return (
+            !fullName &&
+            !phone &&
+            amountClient === 1 &&
+            typeRequest === 'Классический' &&
+            !amountRequest &&
+            phoneCall === true &&
+            city === '' &&
+            !date
+        )
+    }
+
+    const clearForm = () => {
+        setFormData({
+            fullName: '',
+            phone: '',
+            amountClient: 1,
+            typeRequest: 'Классический',
+            amountRequest: null,
+            phoneCall: true,
+            city: '',
+            date: ''
+        })
+    }
+
     const {fullName, phone, amountClient, typeRequest, amountRequest, phoneCall, city, date} = formData;
 
     const [error, setError] = useState(null)
@@ -60,8 +93,8 @@ const NewRequestPage = () => {
         setFormData(prevState => ({
             ...prevState,
             date: selectedDate
-        }));
-    };
+        }))
+    }
 
 
     const handleSubmit = async (e) => {
@@ -75,6 +108,8 @@ const NewRequestPage = () => {
             alert('There was an error sending the request.')
         }
     }
+
+
 
 
     return (
@@ -108,7 +143,7 @@ const NewRequestPage = () => {
                         <Form.Group className="col-md-3">
                             <Form.Label> Номер телефона</Form.Label>
 
-                            <ApplyInput type="numeric">
+                            <ApplyInput>
                                 <Form.Control type="tel" name="phone" pattern="\+7[0-9]{10}"
                                               placeholder="+7(___)___-____" onChange={handleChange} required/>
                             </ApplyInput>
@@ -155,6 +190,7 @@ const NewRequestPage = () => {
                                 <DatePicker
                                     selected={date}
                                     onChange={handleDateChange}
+                                    dateFormat='dd/MM/yyyy'
                                 />
                             </Col>
 
@@ -192,12 +228,13 @@ const NewRequestPage = () => {
                         </Form.Group>
 
 
-                        <div className="col-md-12 text-right">
+                        <div className="col-md-12">
                             <h6><em>* is a required field</em></h6>
                         </div>
 
-                        <Form.Group className="col-md-12 text-center">
-                            <button type="submit" className="btn btn-primary">Submit</button>
+                        <Form.Group className="col-md-12">
+                            <button type="submit" className="btn btn-primary btn-lg m-1">Отправить</button>
+                            <button type="button" className="btn btn-secondary btn-lg m-1" onClick={clearForm} disabled={isFormEmpty()} >Очистить</button>
                         </Form.Group>
 
                     </Row>

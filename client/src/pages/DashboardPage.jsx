@@ -16,8 +16,8 @@ const DashboardPage = () => {
                     <Col className="col-md-12"> <CurrencyDiagram/> </Col>
                 </Row>
                 <Row className="p-0 justify-content-start">
-                    <Col> <SalesDiagram/> </Col>
-                    <Col> <RequestDiagram/> </Col>
+                    <Col className="col-4 pb-5" style={{maxHeight:"400px"}} > <SalesDiagram/> </Col>
+                    <Col className="col-4 pb-5" style={{maxHeight:"400px"}}> <RequestDiagram/> </Col>
                     <Col> <KpiDiagram/> </Col>
                 </Row>
 
