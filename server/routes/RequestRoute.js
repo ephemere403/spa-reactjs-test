@@ -12,7 +12,9 @@ export const CreateApply = async(req,res) => {
             city : req.body.city,
             phoneCall : req.body.phoneCall,
             date : req.body.date,
-            status: req.body.status
+            status: req.body.status,
+            emailMe: req.body.status,
+            messageMe: req.body.status
 
         })
 
@@ -57,46 +59,33 @@ export const RemoveApply = async(req,res) => {
     }
 }
 
-export const UpdateApply = async(req,res) => {
-    const ApplyId = req.query.id
+export const UpdateApply = async(req, res) => {
+    const ApplyId = req.query.id;
 
     if (!mongoose.Types.ObjectId.isValid(ApplyId)) {
         return res.status(400).send('Не существует такой заявки');
     }
 
     try {
-
-       await Apply.findOneAndUpdate(
-        {
-            _id : ApplyId
-        },
-        {
-            fullName : req.body.fullName,
-            phone : req.body.phone,
-            typeRequest : req.body.typeRequest,
-            amountRequest : req.body.amountRequest,
-            city : req.body.city,
-            phoneCall : req.body.phoneCall,
-            date : req.body.date,
-            status: req.body.status
-
-        },
-        {
-            new: true
-        }
-        )
+        // Only update the 'status' field
+        await Apply.findOneAndUpdate(
+            { _id: ApplyId },
+            { status: req.body.status },
+            { new: true }
+        );
 
         res.status(200).json({
-            message : 'Успешно обновлена заявка'
-        })
+            message: 'Успешно обновлена заявка'
+        });
 
-    } catch(error){
+    } catch(error) {
         res.status(500).json({
             message: 'Не удалось обновить заявку'
-        })
-        console.log(error)
+        });
+        console.log(error);
     }
 }
+
 
 export const GetAllApplies = async (req, res) => {
     try {

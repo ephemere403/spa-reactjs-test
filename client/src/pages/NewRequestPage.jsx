@@ -11,16 +11,17 @@ import {isValidEmail, isValidPhone} from "../utilities/ValidateScript";
 import CityInput from "../components/Request/CityInput";
 
 const NewRequestPage = () => {
+    const [error, setError] = useState(null)
     const storedFormData = sessionStorage.getItem('formData')
     const defaultData = {
         fullName: '',
         phone: '',
         amountClient: 1,
         typeRequest: 'Классический',
-        amountRequest: null,
+        amountRequest: 1000,
         phoneCall: true,
         city: '',
-        date: ''
+        date: new Date
     }
     const [formData, setFormData] = useState(storedFormData ? JSON.parse(storedFormData) : defaultData)
 
@@ -31,13 +32,12 @@ const NewRequestPage = () => {
     const isFormEmpty = () => {
         return (
             !fullName &&
-            !phone &&
+            phone === '' &&
             amountClient === 1 &&
             typeRequest === 'Классический' &&
-            !amountRequest &&
+            amountRequest === 1000 &&
             phoneCall === true &&
-            city === '' &&
-            !date
+            city === ''
         )
     }
 
@@ -47,18 +47,19 @@ const NewRequestPage = () => {
             phone: '',
             amountClient: 1,
             typeRequest: 'Классический',
-            amountRequest: null,
+            amountRequest: 1000,
             phoneCall: true,
             city: '',
-            date: ''
+            date: new Date
         })
+        setError(null)
     }
 
     const {fullName, phone, amountClient, typeRequest, amountRequest, phoneCall, city, date} = formData;
 
-    const [error, setError] = useState(null)
     const handleChange = (e) => {
         const {name, value} = e.target
+        console.log(name, value)
 
         if (value === '') {
             setError(null)
@@ -66,20 +67,24 @@ const NewRequestPage = () => {
         }
 
         if (name === 'phone' && !isValidPhone(value)) {
-            setError("Invalid phone number")
+            setError("Некорректный телефонный номер")
             return
         }
 
         if (name === 'email' && !isValidEmail(value)) {
-            setError("Invalid email");
+            setError("Некорректный e-mail");
             return
+        }
+
+        if (name === 'amountRequest' && value < 1000) {
+            setError("Минимальная сумма - 1000")
         }
 
         if (name === 'phoneCall') {
             setFormData(prevState => ({
                 ...prevState,
-                [name]: value === 'true' // Convert the string "true" or "false" back into a boolean
-            }));
+                [name]: value === 'true'
+            }))
         } else {
             setError(null)
             setFormData(prevState => ({
@@ -103,9 +108,9 @@ const NewRequestPage = () => {
             await axios.post('http://localhost:3000/requests', {
                 fullName, phone, amountClient, typeRequest, amountRequest, phoneCall, city, date
             });
-            alert('Request sent successfully!')
+            alert('Заявка была зарегистрирована')
         } catch (error) {
-            alert('There was an error sending the request.')
+            alert('Заявка не была обработана')
         }
     }
 
@@ -115,7 +120,7 @@ const NewRequestPage = () => {
     return (
         <>
             <h2 className="pb-5 pt-2">Новая Заявка</h2>
-            <Container className="bg-body-secondary m-0">
+            <Container className="m-0">
 
                 {error && <Alert variant="danger">{error}</Alert>}
 
@@ -125,10 +130,10 @@ const NewRequestPage = () => {
                         <Form.Group className="col-md-6">
                             <Form.Label> Название заявки* </Form.Label>
 
-                            <ApplyInput>
+
                                 <Form.Control name="fullName" value={fullName} placeholder="Напишите название заявки"
-                                              onChange={handleChange} required/>
-                            </ApplyInput>
+                                              onChange={handleChange}/>
+
                         </Form.Group>
 
                         <Form.Group className="col-md-3">
@@ -141,10 +146,10 @@ const NewRequestPage = () => {
                         </Form.Group>
 
                         <Form.Group className="col-md-3">
-                            <Form.Label> Номер телефона</Form.Label>
+                            <Form.Label> Номер телефона*</Form.Label>
 
                             <ApplyInput>
-                                <Form.Control type="tel" name="phone" pattern="\+7[0-9]{10}"
+                                <Form.Control type="tel" name="phone" value={phone}
                                               placeholder="+7(___)___-____" onChange={handleChange} required/>
                             </ApplyInput>
                         </Form.Group>
@@ -156,7 +161,8 @@ const NewRequestPage = () => {
                                     <ApplyInput type="numeric">
                                         <Form.Control name="amountRequest" value={amountRequest}
                                                       placeholder="Сумма в тг"
-                                                      onChange={handleChange} required/>
+                                                      onChange={handleChange}
+                                                      required/>
                                     </ApplyInput>
                                 </Col>
                                 <Col className="align-self-center p-0 col-2"> ₸ </Col>
@@ -176,7 +182,7 @@ const NewRequestPage = () => {
                         </Form.Group>
 
                         <Form.Group className="col-md-3">
-                            <Form.Label> Город </Form.Label>
+                            <Form.Label> Город* </Form.Label>
                             <ApplyInput>
                                 <CityInput selectedCity={city} onChange={handleChange}/>
                             </ApplyInput>
@@ -229,11 +235,11 @@ const NewRequestPage = () => {
 
 
                         <div className="col-md-12">
-                            <h6><em>* is a required field</em></h6>
+                            <h6><i>* это необходимые поля для заполнения</i></h6>
                         </div>
 
                         <Form.Group className="col-md-12">
-                            <button type="submit" className="btn btn-primary btn-lg m-1">Отправить</button>
+                            <button type="submit" className="btn btn-primary btn-lg m-1" disabled={error !== null}>Отправить</button>
                             <button type="button" className="btn btn-secondary btn-lg m-1" onClick={clearForm} disabled={isFormEmpty()} >Очистить</button>
                         </Form.Group>
 

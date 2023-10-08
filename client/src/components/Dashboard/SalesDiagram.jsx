@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import axios from "axios";
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend} from 'recharts'
+import {BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend} from 'recharts'
 import {DropdownButton, Dropdown} from 'react-bootstrap'
 import CustomSkeleton from "../Skeleton";
 import Row from "react-bootstrap/Row";
@@ -14,13 +14,23 @@ const SalesDiagram = () => {
     const [error, setError] = useState(null)
 
     useEffect(() => {
+
+        setLoading(true)
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/fetchApplies/city`)
+                const currentDate = new Date();
+                const params = {
+                    year: currentDate.getFullYear()
+                };
+
+                if (mode === 'month') {
+                    params.month = currentDate.getMonth() + 1
+                }
+
+                const response = await axios.get(`http://localhost:3000/fetchApplies/city`, { params })
 
                 setData(response.data.cityStats)
                 setLoading(false)
-                console.log(data)
             } catch (error) {
                 console.error(`Error fetching ${mode} stats:`, error)
                 setError(error.response.data.message)
@@ -30,6 +40,7 @@ const SalesDiagram = () => {
         fetchData()
     }, [mode])
 
+
     return (
         <>
             {loading ? (
@@ -37,8 +48,8 @@ const SalesDiagram = () => {
             ) : (
                 <>
                     <Row className="align-items-center pb-3">
-                        <Col className="col-8">Продажи по Казахстану</Col>
-                        <Col className="col-4 pl-1">
+                        <Col className="col-sm-6 col-lg-8"><h6>Продажи по Казахстану</h6></Col>
+                        <Col className="col-sm-6 col-lg-2">
                             <DropdownButton
                                 title={mode === 'month' ? 'за месяц' : 'за год'}
                                 onSelect={(selectedMode) => setMode(selectedMode)}
@@ -50,13 +61,13 @@ const SalesDiagram = () => {
 
 
                     </Row>
-                    <ResponsiveContainer >
-                        <BarChart width={600} height={300} data={data} >
+                    <ResponsiveContainer style={{maxHeight: "300px"}}>
+                        <BarChart width={600} height={300} data={data}>
                             <CartesianGrid strokeDasharray="3 3"/>
-                            <XAxis dataKey="_id"/>
-                            <YAxis  />
+                            <XAxis dataKey="_id" />
+                            <YAxis allowDecimals={false} />
                             <Bar dataKey="count" fill="#8884d8"/>
-
+                            <Legend content={<CustomLegend totals={[1, 2, 3]}/>}/>
 
                         </BarChart>
                     </ResponsiveContainer>

@@ -72,18 +72,78 @@ export const FetchAppliesYear = async (req, res) => {
 
 
 export const FetchAppliesCity = async(req,res) => {
+    const { year, month } = req.query
 
     try {
-        const cityStats = await Apply.aggregate([
-            {
-                $group: {
-                    _id: "$city",
-                    count: { $sum: 1 }
-                }
+        const matchStage = {}
+
+        if (year) {
+            matchStage["date"] = {
+                $gte: new Date(Number(year), 0, 1),
+                $lte: new Date(Number(year) + 1, 0, 1)
+            };
+        }
+
+        if (month) {
+            matchStage["date"] = {
+                $gte: new Date(Number(year), Number(month) - 1, 1),
+                $lte: new Date(Number(year), Number(month), 1)
+            };
+        }
+
+        const pipeline = [];
+
+        if (Object.keys(matchStage).length > 0) {
+            pipeline.push({ $match: matchStage })
+        }
+
+        pipeline.push({
+            $group: {
+                _id: "$city",
+                count: { $sum: 1 }
             }
-        ])
+        })
+
+        const cityStats = await Apply.aggregate(pipeline)
 
         res.json({ cityStats })
+
+    } catch (error) {
+        res.status(500).json({ message: 'Не удалось обновить информацию' })
+    }
+}
+
+export const FetchKPI = async (req,res) => {
+    const timeframe = req.query.timeframe
+
+    const today = new Date()
+    let startDate, endDate
+
+    if (timeframe === 'day') {
+        startDate = new Date(today.setHours(0, 0, 0, 0));
+        endDate = new Date(today.setHours(23, 59, 59, 999));
+    } else if (timeframe === 'month') {
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999)
+    } else {
+        return res.status(400).json({ message: 'Invalid timeframe specified.' })
+    }
+
+    try {
+        const applies = await Apply.find({
+            date: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        })
+
+        const totalApplies = applies.length
+        const rejected = applies.filter(apply => apply.status === 'Rejected').length
+        const accepted = applies.filter(apply => apply.status === 'Accepted').length
+
+        const kpiPercentage = totalApplies !== 0 ? ((rejected + accepted) / totalApplies) * 100 : 0
+
+        res.json({ kpiPercentage })
 
     } catch (error) {
         res.status(500).json({ message: 'Не удалось обновить информацию' })

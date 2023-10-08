@@ -14,7 +14,7 @@ const MonthlyStatsChart = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [mode, setMode] = useState('month')
-    const transformData = (stats) => {
+        const transformData = (stats) => {
         const dataMap = {}
 
         stats.forEach(stat => {
@@ -28,6 +28,7 @@ const MonthlyStatsChart = () => {
     }
 
     useEffect(() => {
+        setLoading(true)
         const fetchData = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/fetchApplies/${mode}`,{
@@ -81,10 +82,10 @@ const MonthlyStatsChart = () => {
                 <CustomSkeleton errorMessage={error}/>
             ) : (
                 <>
-                    <Row className="align-items-center pb-3">
-                        <Col className="col-8">Статистика Заявок</Col>
-                        <Col className="col-4 pl-1">
-                            <DropdownButton
+                    <Row className="align-items-start pb-3">
+                        <Col className="col-sm-6"> <h6> Статистика Заявок </h6> </Col>
+                        <Col className="col-sm-6">
+                            <DropdownButton className="float-start"
                                 title={mode === 'month' ? 'за месяц' : 'за год'}
                                 onSelect={(selectedMode) => setMode(selectedMode)}
                             >

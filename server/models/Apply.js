@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-let citiesArr = ['Алматы', 'Астана', 'Актау','Атырау', 'Актобе', 'Караганда', 'Кокшетау', 'Костанай', 'Караганда' ]
+let citiesArr = ['Алматы', 'Астана', 'Актау','Атырау', 'Актобе', 'Кокшетау', 'Костанай', 'Караганда' ]
 let statusArr = ['Unseen', 'Rejected', 'Applied']
 
 let Apply
@@ -65,6 +65,15 @@ const RequestSchema = new mongoose.Schema({
             message: `заявка с некорректным статусом {VALUE}`
         },
         default: "Unseen"
+    },
+
+   emailMe: {
+        type: Boolean,
+       default: false
+   },
+    messageMe: {
+        type: Boolean,
+        default: true
     }
 
 })

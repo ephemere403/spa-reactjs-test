@@ -16,11 +16,14 @@ function App() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/requests">
-          <Route path="/requests/new" element={<NewRequestPage/>}/>
-          <Route path="/requests/:id" element={<EditRequestPage/>}/>
-          <Route path="/requests/" element={<GroupRequestPage />} />
+          <Route path="/requests/new" element={<NewRequestPage />} />
+          <Route path="/requests/:id" element={<EditRequestPage />} />
+          <Route path="/requests/all" element={<GroupRequestPage status="All" />} />
+          <Route path="/requests/accepted" element={<GroupRequestPage status="Applied" />} />
+          <Route path="/requests/rejected" element={<GroupRequestPage status="Rejected" />} />
         </Route>
       </Routes>
+
     </Layout>
           
   );

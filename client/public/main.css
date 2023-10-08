@@ -1,0 +1,32 @@
+.container {
+    overflow: visible;
+    border-radius: 1rem;
+    padding: 2rem
+}
+
+/* styles.css */
+.sidebar {
+    padding-left: 2vw;
+    width: 14vw;
+    height: 100vh;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6; /* Adjust this to your desired border color */
+}
+
+.nav-item {
+    width: 100%
+}
+
+.nav-link {
+    padding: 15px;
+    transition: background-color 0.3s
+}
+
+.nav-link:hover {
+    background-color: #e9ecef
+}
+
+.nav-link.active {
+    background-color: #e9ecef;
+    font-weight: bold;
+}

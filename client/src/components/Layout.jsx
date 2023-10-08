@@ -7,7 +7,7 @@ const Layout = ({ children }) => {
     return (
         <div className="layout">
             <Row>
-                <Col className="col-2 p-0"><Sidebar /></Col>
+                <Col className="col-2"><Sidebar /></Col>
                 <Col className="content p-0">
                     {children}
                 </Col>
