@@ -1,14 +1,19 @@
 import React, {useEffect, useState} from "react"
 import axios from "axios"
-import {Container, Button, Table, InputGroup} from "react-bootstrap"
+import {Container, Button, Table, InputGroup, Form} from "react-bootstrap"
 import {ReactComponent as CheckIcon} from "../img/check-icon.svg"
 import {ReactComponent as CrossIcon} from "../img/x-icon.svg"
+import {ReactComponent as LeftArrow} from "../img/arrow-left.svg"
+import {ReactComponent as RightArrow} from "../img/arrow-right.svg"
 import {formatDateToRussian} from "../utilities/FormatDates";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const GroupRequestPage = (props) => {
     const [applications, setApplications] = useState([])
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 10
+    const [typedPage, setTypedPage] = useState(1)
 
     useEffect(() => {
         const fetchApplications = async () => {
@@ -26,12 +31,11 @@ const GroupRequestPage = (props) => {
 
     const handleApply = async (id) => {
         try {
-            const response = await axios.patch(`http://localhost:3000/requests?id=${id}`, { status: "Applied" });
+            const response = await axios.patch(`http://localhost:3000/requests?id=${id}`, {status: "Applied"});
             if (response.data && response.data.message) {
                 console.log(response.data.message);
             }
 
-            // Refetch applications to update the UI
             const updatedApplications = await axios.get(`http://localhost:3000/requests?status=${props.status}&page=${currentPage}&limit=${itemsPerPage}`);
             setApplications(updatedApplications.data);
 
@@ -42,12 +46,11 @@ const GroupRequestPage = (props) => {
 
     const handleReject = async (id) => {
         try {
-            const response = await axios.patch(`http://localhost:3000/requests?id=${id}`, { status: "Rejected" });
+            const response = await axios.patch(`http://localhost:3000/requests?id=${id}`, {status: "Rejected"});
             if (response.data && response.data.message) {
                 console.log(response.data.message);
             }
 
-            // Refetch applications to update the UI
             const updatedApplications = await axios.get(`http://localhost:3000/requests?status=${props.status}&page=${currentPage}&limit=${itemsPerPage}`);
             setApplications(updatedApplications.data);
 
@@ -92,7 +95,7 @@ const GroupRequestPage = (props) => {
                     <td>{app.city}</td>
                     <td>{app.status}</td>
                     <td>
-                        {props.status === "All" ? (<InputGroup>
+                        <InputGroup>
                             <Button variant="outline-success" onClick={() => handleApply(app._id)}>
                                 <span> Принять </span>
                                 <CheckIcon/>
@@ -101,34 +104,57 @@ const GroupRequestPage = (props) => {
                                 <span> Удалить </span>
                                 <CrossIcon/>
                             </Button>
-                        </InputGroup>) : null}
+                        </InputGroup>
                     </td>
                 </tr>))}
                 </tbody>
             </Table>
+
+            <Row className="pt-3 justify-content-end">
+                <Col >
+                    <Button
+                        disabled={currentPage <= 1}
+                        onClick={() => setCurrentPage(prev => prev - 1)}>
+                        <LeftArrow/>
+                    </Button>
+
+                    <span>  {currentPage}  </span>
+
+                    <Button
+                        disabled={applications.length < itemsPerPage}
+                        onClick={() => setCurrentPage(prev => prev + 1)}>
+                        <RightArrow/>
+                    </Button>
+                </Col>
+
+                <Col className="">
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter page number"
+                        onChange={(e) => setTypedPage(Number(e.target.value))}
+                    />
+                </Col>
+
+                <Col className="">
+                    <Button
+                        onClick={() => {
+                            if (typedPage && !isNaN(typedPage) && typedPage > 0 && typedPage <= currentPage + Math.ceil(applications.length / itemsPerPage)) {
+                                setCurrentPage(typedPage)
+                            } else {
+                                alert('Недопустимая страница')
+
+                            }
+                        }}
+                    >
+                        Перейти
+                    </Button>
+                </Col>
+            </Row>
+
+
         </Container>
-        <div className="pagination-container">
-            <Button
-                disabled={currentPage <= 1}
-                onClick={() => setCurrentPage(prev => prev - 1)}
-            >
-                Prev
-            </Button>
-            <span>{currentPage}</span>
-
-            <Button
-                onClick={() => setCurrentPage(prev => prev + 1)}
-            >
-                Next
-            </Button>
 
 
-            <input
-                type="number"
-                value={currentPage}
-                onChange={(e) => setCurrentPage(Number(e.target.value))}
-            />
-        </div>
     </div>)
 }
 

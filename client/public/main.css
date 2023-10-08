@@ -1,15 +1,26 @@
 .container {
-    overflow: visible;
+    overflow: auto;
     border-radius: 1rem;
-    padding: 2rem
+    padding: 2rem;
+    background-color: #b1bdcb;
+    width: 90rem;
 }
 
-/* styles.css */
+.tr{
+    display: flex;
+    background-color: #b1bdcb;
+    border-radius: 1rem;
+}
+
+.diagram{
+
+
+}
+
 .sidebar {
     padding-left: 2vw;
     width: 14vw;
     height: 100vh;
-    background-color: #f8f9fa;
     border-right: 1px solid #dee2e6; /* Adjust this to your desired border color */
 }
 

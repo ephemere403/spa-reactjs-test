@@ -40,6 +40,27 @@ const SalesDiagram = () => {
         fetchData()
     }, [mode])
 
+    const computeTotals = (data) => {
+        const totals = {
+            'Unseen': 0,
+            'Rejected': 0,
+            'Applied': 0
+        }
+        data.forEach(item => {
+            Object.keys(item).forEach(key => {
+                if (key !== "month") {
+                    if (!totals[key]) {
+                        totals[key] = 0;
+                    }
+                    totals[key] += item[key]
+                }
+            })
+        })
+        return totals
+    }
+
+    const totals = computeTotals(data)
+
 
     return (
         <>
@@ -67,7 +88,8 @@ const SalesDiagram = () => {
                             <XAxis dataKey="_id" />
                             <YAxis allowDecimals={false} />
                             <Bar dataKey="count" fill="#8884d8"/>
-                            <Legend content={<CustomLegend totals={[1, 2, 3]}/>}/>
+
+                            <Legend content={<CustomLegend totals={totals}/>}/>
 
                         </BarChart>
                     </ResponsiveContainer>

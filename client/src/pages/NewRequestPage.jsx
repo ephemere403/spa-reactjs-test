@@ -1,14 +1,16 @@
-import {React, useEffect, useState} from "react"
-import DatePicker from "react-datepicker"
-import ApplyInput from "../components/Request/ApplyInput"
-import Row from "react-bootstrap/Row"
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import {FormCheck, FormSelect, Alert} from "react-bootstrap";
+import React, {useEffect, useState} from "react"
 import axios from 'axios'
-import Col from "react-bootstrap/Col";
-import {isValidEmail, isValidPhone} from "../utilities/ValidateScript";
-import CityInput from "../components/Request/CityInput";
+import DatePicker from "react-datepicker"
+import MaskedInput from "react-maskedinput"
+import Container from 'react-bootstrap/Container'
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
+import {Form, FormCheck, FormSelect, Alert} from "react-bootstrap"
+
+
+import {isValidEmail, isValidPhone, validateRequiredFields} from "../utilities/ValidateScript"
+import CityInput from "../components/Request/CityInput"
+import ApplyInput from "../components/Request/ApplyInput"
 
 const NewRequestPage = () => {
     const [error, setError] = useState(null)
@@ -20,10 +22,14 @@ const NewRequestPage = () => {
         typeRequest: 'Классический',
         amountRequest: 1000,
         phoneCall: true,
-        city: '',
-        date: new Date
+        city: 'Алматы',
+        date: new Date()
     }
-    const [formData, setFormData] = useState(storedFormData ? JSON.parse(storedFormData) : defaultData)
+    const parsedData = JSON.parse(storedFormData);
+    const validDate = parsedData && parsedData.date ? new Date(parsedData.date) : new Date();
+    const initialData = storedFormData ? {...parsedData, date: validDate} : defaultData;
+    const [formData, setFormData] = useState(initialData);
+
 
     useEffect(() => {
         sessionStorage.setItem('formData', JSON.stringify(formData))
@@ -50,7 +56,7 @@ const NewRequestPage = () => {
             amountRequest: 1000,
             phoneCall: true,
             city: '',
-            date: new Date
+            date: ''
         })
         setError(null)
     }
@@ -59,15 +65,15 @@ const NewRequestPage = () => {
 
     const handleChange = (e) => {
         const {name, value} = e.target
-        console.log(name, value)
+
+        console.log({name, value})
 
         if (value === '') {
             setError(null)
-            return
-        }
-
-        if (name === 'phone' && !isValidPhone(value)) {
-            setError("Некорректный телефонный номер")
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: ''
+            }))
             return
         }
 
@@ -93,17 +99,48 @@ const NewRequestPage = () => {
             }))
         }
     }
+    const handlePhoneChange = (e) => {
+        const {value} = e.target
+        setError(null)
 
+        if (value === ''){
+            setFormData(prevState => ({
+                ...prevState,
+                phone : value
+            }))
+            return
+        }
+
+        let processedValue = value.replace(/\D+/g, '')
+        if (!isValidPhone(processedValue)) {
+            setError("Некорректный телефонный номер")
+            return
+        }
+
+
+        setFormData(prevState => ({
+            ...prevState,
+             phone : processedValue
+        }))
+
+    }
     const handleDateChange = (selectedDate) => {
         setFormData(prevState => ({
             ...prevState,
             date: selectedDate
         }))
-    }
 
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const requiredFields = ['fullName', 'phone', 'city', 'typeRequest']
+        const errorMessage = validateRequiredFields(formData, requiredFields);
+        if (errorMessage) {
+            setError(errorMessage);
+            return;
+        }
         try {
             await axios.post('http://localhost:3000/requests', {
                 fullName, phone, amountClient, typeRequest, amountRequest, phoneCall, city, date
@@ -115,14 +152,18 @@ const NewRequestPage = () => {
     }
 
 
-
-
     return (
         <>
             <h2 className="pb-5 pt-2">Новая Заявка</h2>
+
+            {error && (
+                <Alert variant="danger">
+                    {error}
+                </Alert>
+            )}
+
             <Container className="m-0">
 
-                {error && <Alert variant="danger">{error}</Alert>}
 
                 <Form onSubmit={handleSubmit}>
                     <Row className="grid align-items-end row-gap-lg-4">
@@ -131,8 +172,8 @@ const NewRequestPage = () => {
                             <Form.Label> Название заявки* </Form.Label>
 
 
-                                <Form.Control name="fullName" value={fullName} placeholder="Напишите название заявки"
-                                              onChange={handleChange}/>
+                            <Form.Control name="fullName" value={fullName} placeholder="Напишите название заявки"
+                                          onChange={handleChange}/>
 
                         </Form.Group>
 
@@ -140,17 +181,24 @@ const NewRequestPage = () => {
                             <Form.Label> Количество заявителей </Form.Label>
 
                             <ApplyInput type="numeric">
-                                <Form.Control name="amountClients" value={amountClient} placeholder="Сумма заявки"
-                                              onChange={handleChange} required/>
+                                <Form.Control type="number" name="amountClient" value={amountClient} placeholder="Кол-во"
+                                              onChange={handleChange}/>
                             </ApplyInput>
+
+
                         </Form.Group>
 
                         <Form.Group className="col-md-3">
-                            <Form.Label> Номер телефона*</Form.Label>
-
+                            <Form.Label>Номер телефона*</Form.Label>
                             <ApplyInput>
-                                <Form.Control type="tel" name="phone" value={phone}
-                                              placeholder="+7(___)___-____" onChange={handleChange} required/>
+                                <MaskedInput
+                                    mask="+7 (111) 111-1111"
+                                    value={phone}
+                                    onChange={handlePhoneChange}
+                                    name="phone"
+                                    placeholder="+7 (___) ___-____"
+                                    className="form-control"
+                                />
                             </ApplyInput>
                         </Form.Group>
 
@@ -161,8 +209,7 @@ const NewRequestPage = () => {
                                     <ApplyInput type="numeric">
                                         <Form.Control name="amountRequest" value={amountRequest}
                                                       placeholder="Сумма в тг"
-                                                      onChange={handleChange}
-                                                      required/>
+                                                      onChange={handleChange}/>
                                     </ApplyInput>
                                 </Col>
                                 <Col className="align-self-center p-0 col-2"> ₸ </Col>
@@ -173,7 +220,7 @@ const NewRequestPage = () => {
                             <Form.Label> Тип заявки* </Form.Label>
 
                             <ApplyInput>
-                                <FormSelect value={typeRequest} name="typeRequest" onChange={handleChange} required>
+                                <FormSelect value={typeRequest} name="typeRequest" onChange={handleChange}>
                                     <option value="Классический">Классический</option>
                                     <option value="Срочный">Срочный</option>
                                     <option value="Эпический">Эпический</option>
@@ -197,6 +244,7 @@ const NewRequestPage = () => {
                                     selected={date}
                                     onChange={handleDateChange}
                                     dateFormat='dd/MM/yyyy'
+                                    className="form-control"
                                 />
                             </Col>
 
@@ -228,7 +276,7 @@ const NewRequestPage = () => {
                             <h6>Получать дополнительную информацию</h6>
 
                             <input type="checkbox" id="EmailMe" className="btn btn-secondary m-1"/>
-                            <label for="EmailMe"> Письма на почту </label>
+                            <label htmlFor="EmailMe"> Письма на почту </label>
                             <input type="checkbox" id="MsgMe" className="btn btn-secondary m-1"/>
                             <label htmlFor="MsgMe"> СМС на телефон </label>
                         </Form.Group>
@@ -239,8 +287,12 @@ const NewRequestPage = () => {
                         </div>
 
                         <Form.Group className="col-md-12">
-                            <button type="submit" className="btn btn-primary btn-lg m-1" disabled={error !== null}>Отправить</button>
-                            <button type="button" className="btn btn-secondary btn-lg m-1" onClick={clearForm} disabled={isFormEmpty()} >Очистить</button>
+                            <button type="submit" className="btn btn-primary btn-lg m-1"
+                                    disabled={error !== null}>Отправить
+                            </button>
+                            <button type="button" className="btn btn-secondary btn-lg m-1" onClick={clearForm}
+                                    disabled={isFormEmpty()}>Очистить
+                            </button>
                         </Form.Group>
 
                     </Row>

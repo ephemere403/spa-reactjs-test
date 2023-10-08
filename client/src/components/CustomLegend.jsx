@@ -6,7 +6,7 @@ const CustomLegend = ({payload, totals}) => {
     return (
         <Row>
             {payload.map((entry, index) => (
-                    <Col key={`item-${index}`} className="col-sm-6 col-lg-3 pb-4">
+                    <Col key={`item-${index}`} className="col-sm-6 col-lg-4 pb-4">
                     <span style={{
                         display: 'inline-block',
                         backgroundColor: entry.color,
@@ -14,7 +14,7 @@ const CustomLegend = ({payload, totals}) => {
                         height: 10,
                         marginRight: 5
                     }}></span>
-                        <h6 style={{display: 'inline-block'}}> {entry.value} - {totals[entry.value]} </h6>
+                        <span style={{display: 'inline-block'}}> {entry.value} - {totals[entry.value]} </span>
                     </Col>
             ))}
         </Row>

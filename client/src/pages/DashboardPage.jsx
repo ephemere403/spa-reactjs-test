@@ -16,9 +16,9 @@ const DashboardPage = () => {
                     <Col className="col-md-12"> <CurrencyDiagram/> </Col>
                 </Row>
                 <Row className="p-0 pb-5">
-                    <Col className="col-12 col-md-6 col-lg-5 pb-5" style={{maxHeight:"400px"}} > <SalesDiagram/> </Col>
-                    <Col className="col-12 col-md-6 col-lg-5 pb-5" style={{maxHeight:"400px"}}> <RequestDiagram/> </Col>
-                    <Col className="col-12 col-md-6 col-lg-2 pb-5" style={{maxHeight:"400px"}}> <KpiDiagram/> </Col>
+                    <Col className="diagram col-12 col-md-6 col-lg-5 pb-5" style={{maxHeight:"300px"}} > <SalesDiagram/> </Col>
+                    <Col className="diagram col-12 col-md-6 col-lg-5 pb-5" style={{maxHeight:"300px"}}> <RequestDiagram/> </Col>
+                    <Col className="diagram col-12 col-md-6 col-lg-2 pb-5" style={{maxHeight:"300px"}}> <KpiDiagram/> </Col>
                 </Row>
 
             </Container>

@@ -59,9 +59,9 @@ const KpiDiagram = () => {
                             <Pie data={data} dataKey="value" fill="#8884d8" innerRadius={50} outerRadius={80}
                                  paddingAngle={2} startAngle={90} endAngle={-270}>
                                 {
-                                    data.map((entry, index) => <Cell key={`cell-${index}`} fill={index === 0 ? "#8884d8" : "#e0e0e0"}/>)
+                                    data.map((entry, index) => <Cell key={`cell-${index}`} fill={index === 0 ? "#e0e0e0" :  "#8884d8" }/>)
                                 }
-                                <Label value={`${(data[0]?.value || 0).toFixed(1)}%`} position="center" fill="#000000" fontSize={20} />
+                                <Label value={`${(data[1]?.value || 0).toFixed(1)}%`} position="center" fill="#000000" fontSize={20} />
 
                             </Pie>
 

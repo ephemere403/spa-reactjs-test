@@ -100,7 +100,7 @@ const MonthlyStatsChart = () => {
                         <BarChart width={600} height={300} data={data}>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="month"/>
-                            <YAxis hide={true}/>
+                            <YAxis allowDecimals={false}/>
                             <Bar dataKey="Unseen" fill={statusColors['Unseen']}/>
                             <Bar dataKey="Rejected" fill={statusColors['Rejected']}/>
                             <Bar dataKey="Applied" fill={statusColors['Applied']}/>
