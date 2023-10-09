@@ -1,20 +1,16 @@
+
 .container {
     overflow: auto;
     border-radius: 1rem;
     padding: 2rem;
     background-color: #b1bdcb;
-    width: 90rem;
+    width: 80vw;
 }
 
 .tr{
     display: flex;
     background-color: #b1bdcb;
     border-radius: 1rem;
-}
-
-.diagram{
-
-
 }
 
 .sidebar {

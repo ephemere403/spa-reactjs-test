@@ -16,7 +16,7 @@ const KpiDiagram = () => {
         setLoading(true)
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/fetchApplies/KPI`, {
+                const response = await axios.get(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/fetchApplies/KPI`, {
                     params: {
                         timeframe: mode
                     }

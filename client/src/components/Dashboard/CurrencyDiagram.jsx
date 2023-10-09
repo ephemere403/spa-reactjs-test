@@ -25,7 +25,7 @@ const CurrencyDiagram = () => {
                 }
                 const dataPromises = dateArray.map(async date => {
                     const dateString = date.toISOString().split('T')[0] // format as YYYY-MM-DD
-                    const response = await axios.get(`http://localhost:3000/fetchCurrency/${dateString}`, {
+                    const response = await axios.get(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/fetchCurrency/${dateString}`, {
                         params: {
                             symbols: 'KZT',
                             access_key: API_Access_Key,

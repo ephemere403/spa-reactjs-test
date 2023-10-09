@@ -142,7 +142,7 @@ const NewRequestPage = () => {
             return;
         }
         try {
-            await axios.post('http://localhost:3000/requests', {
+            await axios.post(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/requests`, {
                 fullName, phone, amountClient, typeRequest, amountRequest, phoneCall, city, date
             });
             alert('Заявка была зарегистрирована')

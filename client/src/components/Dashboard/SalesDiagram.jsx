@@ -27,7 +27,7 @@ const SalesDiagram = () => {
                     params.month = currentDate.getMonth() + 1
                 }
 
-                const response = await axios.get(`http://localhost:3000/fetchApplies/city`, { params })
+                const response = await axios.get(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/fetchApplies/city`, { params })
 
                 setData(response.data.cityStats)
                 setLoading(false)

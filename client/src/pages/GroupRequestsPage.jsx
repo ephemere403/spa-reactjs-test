@@ -18,7 +18,7 @@ const GroupRequestPage = (props) => {
     useEffect(() => {
         const fetchApplications = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/requests?status=${props.status}&page=${currentPage}&limit=${itemsPerPage}`)
+                const response = await axios.get(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/requests?status=${props.status}&page=${currentPage}&limit=${itemsPerPage}`)
                 setApplications(response.data)
 
             } catch (error) {
@@ -31,12 +31,12 @@ const GroupRequestPage = (props) => {
 
     const handleApply = async (id) => {
         try {
-            const response = await axios.patch(`http://localhost:3000/requests?id=${id}`, {status: "Applied"});
+            const response = await axios.patch(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/requests?id=${id}`, {status: "Applied"});
             if (response.data && response.data.message) {
                 console.log(response.data.message);
             }
 
-            const updatedApplications = await axios.get(`http://localhost:3000/requests?status=${props.status}&page=${currentPage}&limit=${itemsPerPage}`);
+            const updatedApplications = await axios.get(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/requests?status=${props.status}&page=${currentPage}&limit=${itemsPerPage}`);
             setApplications(updatedApplications.data);
 
         } catch (error) {
@@ -46,7 +46,7 @@ const GroupRequestPage = (props) => {
 
     const handleReject = async (id) => {
         try {
-            const response = await axios.patch(`http://localhost:3000/requests?id=${id}`, {status: "Rejected"});
+            const response = await axios.patch(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/requests?id=${id}`, {status: "Rejected"});
             if (response.data && response.data.message) {
                 console.log(response.data.message);
             }
@@ -95,7 +95,7 @@ const GroupRequestPage = (props) => {
                     <td>{app.city}</td>
                     <td>{app.status}</td>
                     <td>
-                        <InputGroup>
+                        <InputGroup className="">
                             <Button variant="outline-success" onClick={() => handleApply(app._id)}>
                                 <span> Принять </span>
                                 <CheckIcon/>
