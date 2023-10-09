@@ -17,7 +17,7 @@
     padding-left: 2vw;
     width: 14vw;
     height: 100vh;
-    border-right: 1px solid #dee2e6; /* Adjust this to your desired border color */
+    border-right: 1px solid #98aec5; /* Adjust this to your desired border color */
 }
 
 .nav-item {
@@ -34,6 +34,6 @@
 }
 
 .nav-link.active {
-    background-color: #e9ecef;
+    background-color: #98aec5;
     font-weight: bold;
 }
