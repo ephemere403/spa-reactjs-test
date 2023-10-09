@@ -27,13 +27,17 @@ const SalesDiagram = () => {
                     params.month = currentDate.getMonth() + 1
                 }
 
+                console.log(params)
                 const response = await axios.get(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/fetchApplies/city`, { params })
 
                 setData(response.data.cityStats)
                 setLoading(false)
             } catch (error) {
-                console.error(`Error fetching ${mode} stats:`, error)
-                setError(error.response.data.message)
+                console.error('Error:', error);
+                if (error.response) {
+                    console.error('Response data:', error.response.data);
+                }
+                setError(error.response ? error.response.data.message : 'Unknown error');
             }
         }
 

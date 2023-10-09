@@ -41,9 +41,13 @@ const MonthlyStatsChart = () => {
                 setData(transformedData)
                 setLoading(false)
             } catch (error) {
-                console.error(`Error fetching ${mode} stats:`, error)
-                setError(error.response.data.message)
+                console.error('Error:', error);
+                if (error.response) {
+                    console.error('Response data:', error.response.data);
+                }
+                setError(error.response ? error.response.data.message : 'Unknown error');
             }
+
         }
 
         fetchData()

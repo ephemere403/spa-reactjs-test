@@ -42,9 +42,13 @@ const CurrencyDiagram = () => {
 
                 setLoading(false)
             } catch (error) {
-                console.error("Error fetching data: ", error);
-                setError(error.response.data.message)
+                console.error('Error:', error);
+                if (error.response) {
+                    console.error('Response data:', error.response.data);
+                }
+                setError(error.response ? error.response.data.message : 'Unknown error');
             }
+
         }
         fetchData()
     }, [daysScope])
